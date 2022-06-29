@@ -25,14 +25,14 @@ steps:
         displayName: 'dotnet build $(buildConfiguration)'
         inputs:
           command: 'build'
-          arguments: '-r $(rid) --configuration $(buildConfiguration) /p:SourceRevisionId=$(Build.SourceVersion)'
+          arguments: '--configuration $(buildConfiguration) /p:SourceRevisionId=$(Build.SourceVersion)'
 
   - task: DotNetCoreCLI@2
       displayName: "Publish"
       inputs:
         command: 'publish'
         publishWebProjects: true
-        arguments: '-r $(rid) --no-build --configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+        arguments: '--no-build --configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
         zipAfterPublish: true
 
   - task: PublishBuildArtifacts@1
