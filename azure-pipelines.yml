@@ -26,3 +26,17 @@ steps:
     inputs:
       command: build
       arguments: '--configuration $(buildConfiguration)'
+  
+  - task: DotNetCoreCLI@2
+    inputs:
+    command: publish
+    displayName: Publish
+    publishWebProjects: True
+    arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+    zipAfterPublish: True
+  
+  - task: PublishBuildArtifacts@1
+    displayName: "Upload Artifacts"
+    inputs:
+      pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
+      artifactName: 'hanselminutes'
