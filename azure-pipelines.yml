@@ -22,7 +22,7 @@ steps:
       restoreSolution: '$(solution)'
 
   - task: DotNetCoreCLI@2
-        displayName: build
-        inputs:
-          command: build
-          arguments: '--configuration $(buildConfiguration)'
+    displayName: build
+    inputs:
+      command: build
+      arguments: '--configuration $(buildConfiguration)'
