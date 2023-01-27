@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections;
 using TodoApi.Models;
 
 namespace TodoApi.Controllers
@@ -18,6 +14,11 @@ namespace TodoApi.Controllers
         public TodoItemsController(TodoContext context)
         {
             _context = context;
+            if(!_context.TodoItems.Any())
+            {
+                _context.TodoItems.AddRangeAsync(new TodoItem { Id = 1, Name = "husk a" }, new TodoItem { Id = 2, Name = "husk b" }, new TodoItem { Id = 3, Name = "husk c", IsComplete = true });
+                _context.SaveChanges();
+            }
         }
 
         // GET: api/TodoItems
@@ -29,6 +30,12 @@ namespace TodoApi.Controllers
               return NotFound();
           }
             return await _context.TodoItems.ToListAsync();
+        }
+
+        [HttpGet("uncompleted")]
+        public async Task<ActionResult<IEnumerable<TodoItem>>> GetUnCompletedTodos()
+        {
+            return Ok( await _context.TodoItems.Where(t => !t.IsComplete).ToListAsync());
         }
 
         // GET: api/TodoItems/5
@@ -50,7 +57,6 @@ namespace TodoApi.Controllers
         }
 
         // PUT: api/TodoItems/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTodoItem(long id, TodoItem todoItem)
         {
@@ -80,7 +86,7 @@ namespace TodoApi.Controllers
             return NoContent();
         }
 
-        // POST: api/TodoItems
+        // POST: api/c
         [HttpPost]
         public async Task<ActionResult<TodoItem>> PostTodoItem(TodoItem todoItem)
         {
@@ -112,6 +118,12 @@ namespace TodoApi.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        [HttpGet("Greet")]
+        public string Greeting([FromServices]IConfiguration conf)
+        {
+            return conf["Greeting"];
         }
 
         private bool TodoItemExists(long id)
